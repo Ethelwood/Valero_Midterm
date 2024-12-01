@@ -1,0 +1,95 @@
+:root {
+    --primary: #121212;
+    --secondary: white;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--primary); 
+    color: var(--secondary);
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
+header {
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 2em;
+    font-weight: 900;
+    padding: 0 10px;
+}
+
+#main-menu {
+    background-image: url('bg.png');
+    background-size: cover;
+    display: flex;
+    flex-grow: 1; /* Fills the space between header and footer */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 450px;
+    margin-top: 50px;
+}
+
+#play-area {
+    margin:auto;
+    height: 600px; 
+    width: 424px; 
+}
+
+
+.game-title {
+    font-weight: bold;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Game Stuff Only */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(15, 25px);
+    grid-template-rows: repeat(15, 25px);
+    border: var(--size) solid var(--secondary);
+}
+
+.tile {
+    position: relative;
+}
+
+.content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+/* Responsive behavior for larger screens */
+@media (min-height: 450px) {
+    body {
+        --size: 25px;
+    }
+
+    footer {
+        height: 40px;
+        font-size: 1em;
+    }
+}
+
+footer {
+    font-size: 0.8em;
+}
+
+footer {
+    height: 30px;
+    text-align: center;
+    font-size: 0.8em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
