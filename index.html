@@ -12,20 +12,35 @@
       <div id="main-menu" class="menu">
         <h1 class="game-title">Snake of Eden</h1>
         <div class="menu-buttons">
-            <button id="start" class="menu-button">Start Game</button>
+            <button id="start" class="menu-button">New Game</button>
             <button id="pause" class="menu-button">Resume Game</button>
-            <button id="settings" class="menu-button">Settings</button>
-            <button id="loadouts" class="menu-button">Loadouts</button>
+            <button id="account" class="menu-button">Account</button>
+            <button id="leader" class="menu-button">Leaderboards</button>
+        </div>
+        <div class="loadout-buttons">
+          <div>
+            <h2>Create a Snake</h2>
+            <form  method="POST" id="taskForm">
+              Snake Name: <input type="text" id="sname" name="sname">
+              Snake Color: <input type="text" id="scolo" name="scolo">
+              <button type="button" onclick="makeSnake()" class="pushable">Make Snake</button>
+            </form>
+            <div class="snakeCard">
+              <div class="snakename">Snake Name</div>
+              <div class="hiscore" id="hiscore">0</div>
+            </div>
+          </div>
         </div>
       </div>
 
       <div id="game-container">
         <header>
           <div class="score">0</div>
+          <div class="hiscore">Best: </div>
         </header>
         <div class="grid"></div>
         <footer>
-          Your ceaseless suffering starts here. There is someone watching.
+          It all begins here. You can feel the hunger clawing from the inside.
         </footer>
       </div>
 

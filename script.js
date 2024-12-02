@@ -45,7 +45,7 @@ window.onload = function() {
 startButton.addEventListener('click', () => {   
     startGame(); 
     startButton.style.display = 'none';
-    pauseButton.style.display = 'flex';
+    pauseButton.style.display = 'block';
 });
 
 pauseButton.addEventListener('click', () => {
@@ -90,6 +90,10 @@ function togglePause() {
     // Resume: Add paused duration to elapsed time
     resumeGame()
   }
+}
+
+function setLoadOut() {
+  
 }
 
 //Event Listener Declaration
@@ -179,6 +183,8 @@ function resetGame() {
   
     // Reset game progress
     startTimestamp = undefined;
+    pauseTimestamp = undefined;
+    elapsedPausedTime = 0;
     stepsTaken = -1; // It's -1 because then the snake will start with a step
     score = 0;
   
@@ -188,6 +194,10 @@ function resetGame() {
     // Reset header
     scoreElement.innerText = "0";
   
+    // Reset footer
+    noteElement.innerHTML = `It all begins here. You can feel the hunger clawing from the inside.`;
+
+
     // Reset tiles
     for (const tile of tiles) setTile(tile);
   
@@ -244,7 +254,7 @@ function main(timestamp) {
     // Continue animation loop
     window.requestAnimationFrame(main);
   } catch (error) {
-    noteElement.innerHTML = `${error.message} Press space to reset the temporal field.`;
+    noteElement.innerHTML = `${error.message} Press escape or space to reset the temporal field.`;
   }
 }
 
@@ -292,29 +302,43 @@ function getNextPosition() {
   switch(snakeDirection) {
     case "right" : {
       const nextPosition = headPosition + 1;
-      if (nextPosition % width == 0) throw Error("The snake hit the walls of Eden, but lacked the force to shatter it.")
-      if (snakePositions.includes(nextPosition)) throw Error("The snake, whose hunger cannot be sated, ended up eating itself.");
+      if (nextPosition % width == 0) wallDeath();
+      if (snakePositions.includes(nextPosition)) selfDeath();
       return nextPosition;
     }
     case "left" : {
       const nextPosition = headPosition - 1;
-      if (nextPosition % width == width - 1) throw Error("The snake hit the walls of Eden, but lacked the force to shatter it.")
-      if (snakePositions.includes(nextPosition)) throw Error("The snake, whose hunger cannot be sated, ended up eating itself.")
+      if (nextPosition % width == width - 1) wallDeath();
+      if (snakePositions.includes(nextPosition)) selfDeath();
       return nextPosition;
     }
     case "down" : {
       const nextPosition = headPosition + width;
-      if (nextPosition > width * height - 1) throw Error("The snake hit the walls of Eden, but lacked the force to shatter it.")
-      if (snakePositions.includes(nextPosition)) throw Error("The snake, whose hunger cannot be sated, ended up eating itself.")
+      if (nextPosition > width * height - 1) wallDeath();
+      if (snakePositions.includes(nextPosition)) selfDeath();
       return nextPosition;
     }
     case "up" : {
       const nextPosition = headPosition - width;
-      if (nextPosition < 0) throw Error("The snake hit the walls of Eden, but lacked the force to shatter it")
-      if (snakePositions.includes(nextPosition)) throw Error("The snake, whose hunger cannot be sated, ended up eating itself.")
+      if (nextPosition < 0) wallDeath();
+      if (snakePositions.includes(nextPosition)) selfDeath();
       return nextPosition;
     }
   }
+}
+
+function wallDeath(){
+  startButton.style.display = 'block';
+  pauseButton.style.display = 'none';
+
+  throw Error("The snake hit the walls of Eden, but lacked the force to shatter the barrier.")
+}
+
+function selfDeath(){
+  startButton.style.display = 'block';
+  pauseButton.style.display = 'none';
+
+  throw Error("The snake, whose hunger can never be sated, ended up devouring itself.")
 }
 
 function headDirection() {
