@@ -11,23 +11,34 @@
 
       <div id="main-menu" class="menu">
         <h1 class="game-title">Snake of Eden</h1>
-        <div class="menu-buttons">
+
+        <div class="menu-buttons" id="menu-buttons">
             <button id="start" class="menu-button">New Game</button>
             <button id="pause" class="menu-button">Resume Game</button>
             <button id="account" class="menu-button">Account</button>
             <button id="leader" class="menu-button">Leaderboards</button>
         </div>
-        <div class="loadout-buttons">
-          <div>
-            <h2>Create a Snake</h2>
+
+        <div class="menu-buttons" id="account-menu">
             <form  method="POST" id="taskForm">
-              Snake Name: <input type="text" id="sname" name="sname">
-              Snake Color: <input type="text" id="scolo" name="scolo">
+              Snake Name: <br><input type="text" id="sname" name="sname"><br><br>
+              Snake Color: <br><input type="text" id="scolor" name="scolor"><br><br>
               <button type="button" onclick="makeSnake()" class="pushable">Make Snake</button>
+              <div id="php-warning">This is a warning message.</div> 
             </form>
+            <br><div class="snakeCard">
+              <div class="snakename">Snake Name</div>
+              <div class="hiscore" id="hiscore">Personal Best: 0</div>
+              <!-- <div class="fakesnake"></div> implement later -->
+            </div>
+        </div>
+
+        <div class="menu-buttons" id="leader-menu">
+          <h2>THEY TRIED.</h2>
+          <div class="leaderboard"> 
             <div class="snakeCard">
               <div class="snakename">Snake Name</div>
-              <div class="hiscore" id="hiscore">0</div>
+              <div class="hiscore" id="hiscore">Personal Best: 0</div>
             </div>
           </div>
         </div>

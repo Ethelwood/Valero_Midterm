@@ -1,9 +1,16 @@
 // DOM Elements
 const mainMenu = document.getElementById('main-menu');
+
+const menuButtons = document.getElementById('menu-buttons');
 const startButton = document.getElementById('start');
 const pauseButton = document.getElementById('pause');
-const settingsButton = document.getElementById('settings');
-const loadoutButton = document.getElementById('loadouts');
+const accountButton = document.getElementById('account');
+const leaderButton = document.getElementById('leader');
+
+const accountMenu = document.getElementById('account-menu');
+
+const leaderMenu = document.getElementById('leader-menu');
+
 const gameContainer = document.getElementById('game-container');
 
 const scoreElement = document.querySelector(".score");
@@ -18,6 +25,7 @@ let musicVolume;
 let isPaused = false;
 let isArrowActive = false;
 let isPauseActive = false;
+let isEscActive = false;
 
 //Game Variables
 let snakePositions;
@@ -40,6 +48,8 @@ const height = 15;
 window.onload = function() {
     gameContainer.style.display = 'none';
     pauseButton.style.display = 'none';
+    leaderMenu.style.display = 'none';
+    accountMenu.style.display = 'none';
 };
 
 startButton.addEventListener('click', () => {   
@@ -50,6 +60,18 @@ startButton.addEventListener('click', () => {
 
 pauseButton.addEventListener('click', () => {
   togglePause();
+});
+
+accountButton.addEventListener('click', () =>{
+  menuButtons.style.display = 'none';
+  accountMenu.style.display = 'flex';
+  isEscActive = true;
+});
+
+leaderButton.addEventListener('click', () =>{
+  menuButtons.style.display = 'none';
+  leaderMenu.style.display = 'flex';
+  isEscActive = true;
 });
 
 
@@ -92,8 +114,10 @@ function togglePause() {
   }
 }
 
-function setLoadOut() {
-  
+function returnToMenu() {
+    accountMenu.style.display = 'none';
+    leaderMenu.style.display = 'none';
+    menuButtons.style.display = 'flex';
 }
 
 //Event Listener Declaration
@@ -101,17 +125,34 @@ window.addEventListener("keydown", function(event) {
   if(!isPauseActive)
     return;
 
-  if(![" ", "Escape"].includes(event.key))
+  if(![" "].includes(event.key))
       return;
 
   event.preventDefault();
   if(
-      event.key == " " ||
-      event.key == "Escape"
+      event.key == " "
   ) {
     togglePause()
   }
 })
+
+window.addEventListener("keydown", function(event) {
+  if(!isEscActive)
+    return;
+
+  if(!["Escape"].includes(event.key))
+      return;
+
+  event.preventDefault();
+  if(
+    event.key == "Escape"
+  ) {
+  returnToMenu();
+  isEscActive = false;
+  }
+  
+})
+
 
 
 window.addEventListener("keydown", function(event) {

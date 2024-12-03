@@ -50,6 +50,13 @@ header {
     flex-direction: column;
 }
 
+/* Loadout Stuff Only */
+
+#account-menu{
+    align-items: center;
+    text-align: center;
+    justify-content: space-between;
+}
 
 /* Game Stuff Only */
 .grid {
