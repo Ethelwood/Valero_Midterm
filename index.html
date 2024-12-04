@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Snake of Eden</title>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <link rel="stylesheet" href="stylesheet.css">
 </head>
   <body>
@@ -20,9 +21,9 @@
         </div>
 
         <div class="menu-buttons" id="account-menu">
-            <form  method="POST" id="taskForm">
-              Snake Name: <br><input type="text" id="sname" name="sname"><br><br>
-              Snake Color: <br><input type="text" id="scolor" name="scolor"><br><br>
+            <form  method="POST" id="snakeDeet">
+              Snake Name: <br><input type="text" id="sname" name="sname" maxlength="10"><br><br>
+              Snake Color: <br><input type="text" id="scolor" name="scolor" maxlength="6"><br><br>
               <button type="button" onclick="makeSnake()" class="pushable">Make Snake</button>
               <div id="php-warning">This is a warning message.</div> 
             </form>
@@ -32,10 +33,29 @@
               <!-- <div class="fakesnake"></div> implement later -->
             </div>
         </div>
+        <script> //script for submitting and generating the snake
+          function makeSnake(){
+            const sname = document.getElementById("sname").value;
+            const scolor = document.getElementById("scolor").value;
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'phpinsertsql.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xhr.onload = function () {
+                if (this.status == 200) {
+                    alert("Data is inserted successfully!");
+                    document.getElementById("snakeDeet").reset();
+                    load();
+                }
+            };
+            xhr.send(`sname=${sname}&scolor=${scolor}`);
+        } 
+        </script>
 
         <div class="menu-buttons" id="leader-menu">
           <h2>THEY TRIED.</h2>
-          <div class="leaderboard"> 
+          <div class="leaderboard" id="leaderboard"> 
             <div class="snakeCard">
               <div class="snakename">Snake Name</div>
               <div class="hiscore" id="hiscore">Personal Best: 0</div>
@@ -43,6 +63,35 @@
           </div>
         </div>
       </div>
+      <script>
+        function load(){
+          $('#leaderboard').empty();
+
+          $.ajax({
+                url: 'phploadlist.php',
+                method: 'POST',
+                dataType: 'json',
+                success: function(data) {
+                    data.forEach(snake => {
+                        makeSnakeCard(snake);
+                    });
+                }
+            });
+        }
+
+        function makeSnakeCard(data){
+          const funcleaderboard = $('#leaderboard');
+            //cardContainer.empty(); // Clear any existing cards
+
+                const snakecard = `<div class="snakeCard">
+                <h5>${data.sname}</h5>
+                <p>${data.scolor}</h5>
+                </div>`;
+                funcleaderboard.append(snakecard);
+        }
+
+        load();
+      </script>
 
       <div id="game-container">
         <header>
@@ -54,7 +103,6 @@
           It all begins here. You can feel the hunger clawing from the inside.
         </footer>
       </div>
-
     </div>
     <script src="script.js"></script>
   </body>

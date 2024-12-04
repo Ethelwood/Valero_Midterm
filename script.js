@@ -22,10 +22,12 @@ let gameColor = "white";
 let musicVolume;
 
 // Game State
+let isDead = false;
 let isPaused = false;
 let isArrowActive = false;
 let isPauseActive = false;
 let isEscActive = false;
+
 
 //Game Variables
 let snakePositions;
@@ -228,6 +230,7 @@ function resetGame() {
     elapsedPausedTime = 0;
     stepsTaken = -1; // It's -1 because then the snake will start with a step
     score = 0;
+    isDead = false;
   
     // Reset inputs
     inputs = [];
@@ -271,6 +274,10 @@ function main(timestamp) {
       return;
     }
 
+    if (isDead) {
+      return;
+    }
+
     // Initialize start timestamp
     if (startTimestamp == undefined) startTimestamp = timestamp;
 
@@ -292,6 +299,7 @@ function main(timestamp) {
       }
     }
 
+    
     // Continue animation loop
     window.requestAnimationFrame(main);
   } catch (error) {
@@ -371,14 +379,16 @@ function getNextPosition() {
 function wallDeath(){
   startButton.style.display = 'block';
   pauseButton.style.display = 'none';
-
+  isArrowActive = false;
+  isDead = true;
   throw Error("The snake hit the walls of Eden, but lacked the force to shatter the barrier.")
 }
 
 function selfDeath(){
   startButton.style.display = 'block';
   pauseButton.style.display = 'none';
-
+  isArrowActive = false;
+  isDead = true;
   throw Error("The snake, whose hunger can never be sated, ended up devouring itself.")
 }
 
