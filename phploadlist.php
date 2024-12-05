@@ -1,26 +1,31 @@
 <?php
-    require "phpconnect.php";
+    require "phpconnect.php"; // Ensure your DB connection is established
 
-    //SQL query to retrieve data from the products table
-    $sql = "select * from snake_table";
+    // SQL query to retrieve snake data from the database
+    $sql = "SELECT sname, scolor FROM snakes";  // Adjust table and column names as needed
 
-    //Execute the query
+    // Execute the query
     $stmt = sqlsrv_query($conn, $sql);
 
-    if($stmt === false) {
+    if ($stmt === false) {
+        // If the query fails, return an error
         die(json_encode(array("error" => "Query failed")));
     }
 
+    // Initialize an array to hold snake data
     $snakelist = array();
 
-    while($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+    // Fetch data and store it in the $snakelist array
+    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         $snakelist[] = array(
-            "name" => $row["sname"],
-            "color" => $row["scolor"],
+            "sname" => $row["sname"],    // Snake name
+            "scolor" => $row["scolor"],  // Snake color
         );
     }
 
-    $jsonData = $todolist;
+    // Return the data as a JSON object to be handled in JavaScript
+    echo json_encode($snakelist);
 
-    echo json_encode($jsonData);
+    // Close the database connection (optional, PHP will do this when the script ends)
+    sqlsrv_close($conn);
 ?>

@@ -8,11 +8,12 @@
     );
 
     $conn = sqlsrv_connect($serverName, $connectionInfo);
+
     if ($conn) {
-        //echo "Connection is successful.<br>";
+        echo "Connection is successful.<br>";
     } else {
-        echo "Connection failed.<br>";
-        die(print_r(sqlsrv_errors(), true));
+        error_log(print_r(sqlsrv_errors(), true));
+        die("Database connection failed. Please try again later.");
     }
 
 ?>

@@ -24,33 +24,71 @@
             <form  method="POST" id="snakeDeet">
               Snake Name: <br><input type="text" id="sname" name="sname" maxlength="10"><br><br>
               Snake Color: <br><input type="text" id="scolor" name="scolor" maxlength="6"><br><br>
-              <button type="button" onclick="makeSnake()" class="pushable">Make Snake</button>
-              <div id="php-warning">This is a warning message.</div> 
+              <button type="button" onclick="makeSnake()" class="pushable">Save Snake</button>
+              <div id="warning"></div> 
             </form>
             <br><div class="snakeCard">
-              <div class="snakename">Snake Name</div>
-              <div class="hiscore" id="hiscore">Personal Best: 0</div>
-              <!-- <div class="fakesnake"></div> implement later -->
+              <div class="snakename" id="currentsname">Snake</div>
+              <div class="hiscore" id="hiscore">0</div>
             </div>
         </div>
-        <script> //script for submitting and generating the snake
-          function makeSnake(){
-            const sname = document.getElementById("sname").value;
-            const scolor = document.getElementById("scolor").value;
+        <script> 
+let currentSname = document.getElementById("currentsname").value; //Rememebers who the current snake is and defaults to Snake
 
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'phpinsertsql.php', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+function makeSnake() {
+    const sname = document.getElementById("sname").value || "Snake";
+    const scolor = document.getElementById("scolor").value || "FFFFFF";
+    const score = parseInt(document.getElementById("hiscore").innerText) || 0;
 
-            xhr.onload = function () {
-                if (this.status == 200) {
-                    alert("Data is inserted successfully!");
-                    document.getElementById("snakeDeet").reset();
-                    load();
-                }
-            };
-            xhr.send(`sname=${sname}&scolor=${scolor}`);
-        } 
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "phpjs.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhr.onload = function () {
+      try{
+        const response = JSON.parse(this.responseText);
+        console.log(response);
+        if (response.status === "success") {
+            alert(response.message);
+            currenSname = sname;
+            printCard(sname, scolor, score);
+        } else {
+            document.getElementById("warning").innerText = response.message;
+        }
+    } catch (e) {
+      console.error("Error parsing JSON:", e);
+      document.getElementById("warning").innerText = "Error occurred while processing your request.";
+    }
+  }
+  xhr.send(`action=saveSnake&sname=${sname}&scolor=${scolor}&score=${score}`);
+}
+
+function retrieveHiScore() {
+    const sname = document.getElementById("sname").value || "Snake";
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "snake_handler.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhr.onload = function () {
+        const response = JSON.parse(this.responseText);
+        if (response.status === "success") {
+            const snake = response.snake;
+            printCard(snake.sname, snake.scolor, snake.score);
+        } else {
+            document.getElementById("warning").innerText = response.message;
+            printCard("Snake", "#FFFFFF", 0);
+        }
+    };
+
+    xhr.send(`action=getSnake&sname=${sname}`);
+}
+
+function printCard(name, color, score) {
+    document.getElementById("currentsname").innerText = name;
+    document.getElementById("hiscore").innerText = score;
+    document.getElementById("currentsname").style.color = color;
+}
         </script>
 
         <div class="menu-buttons" id="leader-menu">
@@ -64,39 +102,12 @@
         </div>
       </div>
       <script>
-        function load(){
-          $('#leaderboard').empty();
-
-          $.ajax({
-                url: 'phploadlist.php',
-                method: 'POST',
-                dataType: 'json',
-                success: function(data) {
-                    data.forEach(snake => {
-                        makeSnakeCard(snake);
-                    });
-                }
-            });
-        }
-
-        function makeSnakeCard(data){
-          const funcleaderboard = $('#leaderboard');
-            //cardContainer.empty(); // Clear any existing cards
-
-                const snakecard = `<div class="snakeCard">
-                <h5>${data.sname}</h5>
-                <p>${data.scolor}</h5>
-                </div>`;
-                funcleaderboard.append(snakecard);
-        }
-
-        load();
+        
       </script>
 
       <div id="game-container">
         <header>
           <div class="score">0</div>
-          <div class="hiscore">Best: </div>
         </header>
         <div class="grid"></div>
         <footer>

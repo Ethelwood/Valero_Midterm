@@ -1,12 +1,13 @@
 :root {
     --primary: #121212;
-    --secondary: white;
+    --gamecolor: white;
+    --size: 2px;
 }
 
 body {
     font-family: 'Arial', sans-serif;
     background-color: var(--primary); 
-    color: var(--secondary);
+    color: white;
     height: 100vh;
     margin: 0;
     overflow: hidden;
@@ -63,7 +64,7 @@ header {
     display: grid;
     grid-template-columns: repeat(15, 25px);
     grid-template-rows: repeat(15, 25px);
-    border: var(--size) solid var(--secondary);
+    border: var(--size) solid var(--gamecolor);
 }
 
 .tile {

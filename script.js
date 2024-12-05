@@ -6,6 +6,7 @@ const startButton = document.getElementById('start');
 const pauseButton = document.getElementById('pause');
 const accountButton = document.getElementById('account');
 const leaderButton = document.getElementById('leader');
+const hiScore = document.getElementById('hiscore');
 
 const accountMenu = document.getElementById('account-menu');
 
@@ -17,7 +18,6 @@ const scoreElement = document.querySelector(".score");
 const noteElement = document.querySelector("footer"); 
 
 //Settings
-let bgColor = "blue";
 let gameColor = "white";
 let musicVolume;
 
@@ -122,6 +122,14 @@ function returnToMenu() {
     menuButtons.style.display = 'flex';
 }
 
+function changeColor() {
+  const colorInput = document.getElementById("scolor").value;
+  gameColor = "#" + colorInput;
+
+  document.documentElement.style.setProperty('--gamecolor', gameColor);
+  console.log(gameColor)
+}
+
 //Event Listener Declaration
 window.addEventListener("keydown", function(event) {
   if(!isPauseActive)
@@ -152,7 +160,6 @@ window.addEventListener("keydown", function(event) {
   returnToMenu();
   isEscActive = false;
   }
-  
 })
 
 
@@ -381,6 +388,7 @@ function wallDeath(){
   pauseButton.style.display = 'none';
   isArrowActive = false;
   isDead = true;
+  setHiScore();
   throw Error("The snake hit the walls of Eden, but lacked the force to shatter the barrier.")
 }
 
@@ -389,7 +397,34 @@ function selfDeath(){
   pauseButton.style.display = 'none';
   isArrowActive = false;
   isDead = true;
+  setHiScore();
   throw Error("The snake, whose hunger can never be sated, ended up devouring itself.")
+}
+
+function setHiScore() {
+  const currentName = document.getElementById("currentsname").innerText;
+  const currentHiScore = parseInt(document.getElementById("hiscore").innerText);
+  
+  if (score > currentHiScore) {
+      // Update the displayed score
+      document.getElementById("hiscore").innerText = score;
+
+      // Send the updated score to the server
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "updatehiscore.php", true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+      xhr.onload = function () {
+          if (this.status == 200) {
+              console.log("High score updated successfully.");
+          } else {
+              console.error("Failed to update high score:", this.responseText);
+          }
+      };
+
+      // Send snake name and new score to the server
+      xhr.send(`action=updateHiScore&sname=${encodeURIComponent(currentName)}&hiscore=${score}`);
+  }
 }
 
 function headDirection() {
