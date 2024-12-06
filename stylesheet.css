@@ -57,6 +57,7 @@ header {
     align-items: center;
     text-align: center;
     justify-content: space-between;
+        
 }
 
 /* Game Stuff Only */
@@ -64,7 +65,7 @@ header {
     display: grid;
     grid-template-columns: repeat(15, 25px);
     grid-template-rows: repeat(15, 25px);
-    border: var(--size) solid var(--gamecolor);
+    border: var(--size) solid white;
 }
 
 .tile {

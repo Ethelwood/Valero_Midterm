@@ -28,16 +28,17 @@
               <div id="warning"></div> 
             </form>
             <br><div class="snakeCard">
-              <div class="snakename" id="currentsname">Snake</div>
+              <div class="snakename" id="currentsname">No Snake</div>
               <div class="hiscore" id="hiscore">0</div>
             </div>
         </div>
         <script> 
 let currentSname = document.getElementById("currentsname").value; //Rememebers who the current snake is and defaults to Snake
+let currentScolor = "#FFFFFF";
 
 function makeSnake() {
-    const sname = document.getElementById("sname").value || "Snake";
-    const scolor = document.getElementById("scolor").value || "FFFFFF";
+    const sname = document.getElementById("sname").value;
+    const scolor = document.getElementById("scolor").value;
     const score = parseInt(document.getElementById("hiscore").innerText) || 0;
 
     const xhr = new XMLHttpRequest();
@@ -46,10 +47,10 @@ function makeSnake() {
 
     xhr.onload = function () {
       try{
+        // console.log(this.responseText);
         const response = JSON.parse(this.responseText);
-        console.log(response);
         if (response.status === "success") {
-            alert(response.message);
+            document.getElementById("warning").innerText = response.message;
             currenSname = sname;
             printCard(sname, scolor, score);
         } else {
@@ -60,6 +61,9 @@ function makeSnake() {
       document.getElementById("warning").innerText = "Error occurred while processing your request.";
     }
   }
+  currentScolor = scolor;
+  changeColor();
+  isSnakeNamed = true;
   xhr.send(`action=saveSnake&sname=${sname}&scolor=${scolor}&score=${score}`);
 }
 
@@ -67,7 +71,7 @@ function retrieveHiScore() {
     const sname = document.getElementById("sname").value || "Snake";
 
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "snake_handler.php", true);
+    xhr.open("POST", "phpjs.php", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
     xhr.onload = function () {
@@ -77,7 +81,7 @@ function retrieveHiScore() {
             printCard(snake.sname, snake.scolor, snake.score);
         } else {
             document.getElementById("warning").innerText = response.message;
-            printCard("Snake", "#FFFFFF", 0);
+            printCard("No Snake", "#FFFFFF", 0);
         }
     };
 
@@ -92,18 +96,74 @@ function printCard(name, color, score) {
         </script>
 
         <div class="menu-buttons" id="leader-menu">
-          <h2>THEY TRIED.</h2>
+          <h3>THE ONES THAT GOT THE CLOSEST:</h3>
           <div class="leaderboard" id="leaderboard"> 
-            <div class="snakeCard">
-              <div class="snakename">Snake Name</div>
-              <div class="hiscore" id="hiscore">Personal Best: 0</div>
-            </div>
+            <!-- Top 5 Snakes will be displayed here -->
           </div>
         </div>
-      </div>
-      <script>
         
-      </script>
+        <script>
+          function retrieveTopSnakes() {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "phpjs.php", true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  
+      xhr.onload = function () {
+          try {
+              console.log(this.responseText);
+              const response = JSON.parse(this.responseText);
+              if (response.status === "success") {
+                  const snakes = response.snakes;
+                  updateLeaderboard(snakes);
+              } else {
+                  document.getElementById("warning").innerText = response.message;
+              }
+          } catch (e) {
+              console.error("Error parsing JSON:", e);
+              document.getElementById("warning").innerText = "Error occurred while processing your request.";
+          }
+      };
+  
+      xhr.send(`action=getTopSnakes`);
+  }
+  
+  function updateLeaderboard(snakes) {
+      const leaderboardElement = document.getElementById("leaderboard");
+      leaderboardElement.innerHTML = ''; // Clear previous leaderboard content
+  
+      snakes.forEach((snake, index) => {
+          const snakeCard = document.createElement("div");
+          snakeCard.classList.add("snakeCard");
+          snakeCard.style.display = "flex";
+          snakeCard.style.flexDirection = "row";
+          snakeCard.style.justifyContent = "center";
+  
+          const snakeName = document.createElement("div");
+          snakeName.classList.add("snakename");
+          snakeName.innerText = snake.sname;
+
+          const separator = document.createElement("div");
+          separator.classList.add("separator");
+          separator.innerText = " - ";
+          
+          const snakeScore = document.createElement("div");
+          snakeScore.classList.add("hiscore");
+          snakeScore.innerText = snake.score;
+  
+          const snakeColor = document.createElement("div");
+          snakeColor.classList.add("snakecolor");
+          snakeColor.style.backgroundColor = snake.scolor;
+          snakeColor.style.width = "20px"; // Set a small width for the color indicator
+  
+          snakeCard.appendChild(snakeName);
+          snakeCard.appendChild(separator);
+          snakeCard.appendChild(snakeScore);
+          snakeCard.appendChild(snakeColor);
+          leaderboardElement.appendChild(snakeCard);
+      });
+  }
+        </script>
+      
 
       <div id="game-container">
         <header>

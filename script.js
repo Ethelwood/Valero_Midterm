@@ -27,7 +27,7 @@ let isPaused = false;
 let isArrowActive = false;
 let isPauseActive = false;
 let isEscActive = false;
-
+let isSnakeNamed = false;
 
 //Game Variables
 let snakePositions;
@@ -54,7 +54,18 @@ window.onload = function() {
     accountMenu.style.display = 'none';
 };
 
+leaderButton.addEventListener('click', () => {
+  menuButtons.style.display = 'none';
+  leaderMenu.style.display = 'flex';
+  isEscActive = true;
+  retrieveTopSnakes();  // Fetch and display the top snakes
+});
+
 startButton.addEventListener('click', () => {   
+    if(!isSnakeNamed){
+    alert('You must first make a Snake using the Account button!')
+    return;
+   }
     startGame(); 
     startButton.style.display = 'none';
     pauseButton.style.display = 'block';
@@ -123,7 +134,7 @@ function returnToMenu() {
 }
 
 function changeColor() {
-  const colorInput = document.getElementById("scolor").value;
+  const colorInput = currentScolor;
   gameColor = "#" + colorInput;
 
   document.documentElement.style.setProperty('--gamecolor', gameColor);
@@ -205,8 +216,6 @@ window.addEventListener("keydown", function(event) {
     return;
   }
 });
-
-
 
 //Grid Instantiation
 const grid = document.querySelector(".grid");
@@ -310,7 +319,7 @@ function main(timestamp) {
     // Continue animation loop
     window.requestAnimationFrame(main);
   } catch (error) {
-    noteElement.innerHTML = `${error.message} Press escape or space to reset the temporal field.`;
+    noteElement.innerHTML = `${error.message} Press space to reset the temporal field.`;
   }
 }
 
@@ -411,7 +420,7 @@ function setHiScore() {
 
       // Send the updated score to the server
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", "updatehiscore.php", true);
+      xhr.open("POST", "phpjs.php", true);
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
       xhr.onload = function () {
